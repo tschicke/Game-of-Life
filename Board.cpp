@@ -54,9 +54,9 @@ void Board::update() {
 			}
 
 			if (currentCells[cellIndex].isAlive()) {
-				if (liveNeighbors <= 2) {
+				if (liveNeighbors < 2) {
 					nextCells[cellIndex].setLiving(false);
-				} else if (liveNeighbors == 3) {
+				} else if (liveNeighbors == 2 || liveNeighbors == 3) {
 					nextCells[cellIndex].setLiving(true);
 				} else if (liveNeighbors > 3) {
 					nextCells[cellIndex].setLiving(false);
@@ -121,6 +121,8 @@ void Board::randomize() {
 		for (int y = 0; y < 72; ++y) {
 			if (rand() > RAND_MAX / 2) {
 				currentCells[getCellIndex(x, y)].setLiving(true);
+			} else {
+				currentCells[getCellIndex(x, y)].setLiving(false);
 			}
 		}
 	}

@@ -30,7 +30,7 @@ int main(){
 	Board board;
 
 	bool running = true;
-	bool paused = true;
+	bool paused = true, stepFrame = false;
 	while(running){
 		sf::Event event;
 		while(window.pollEvent(event)){
@@ -39,15 +39,24 @@ int main(){
 			} else if(event.type == sf::Event::KeyPressed){
 				if(event.key.code == sf::Keyboard::Space){
 					paused = !paused;
+				} else if(event.key.code == sf::Keyboard::N){
+					stepFrame = true;
+				} else if(event.key.code == sf::Keyboard::R){
+					board.randomize();
+				} else if(event.key.code == sf::Keyboard::Escape){
+					running = false;
+				} else if(event.key.code == sf::Keyboard::C){
+					board.clear();
 				}
 			} else if(event.type == sf::Event::MouseButtonPressed){
 				board.toggleCell(event.mouseButton.x, 720 - event.mouseButton.y);
 			}
 		}
 
-		if (!paused) {
+		if (!paused || stepFrame) {
 			board.update();
 		}
+		stepFrame = false;
 
 		glClear(GL_COLOR_BUFFER_BIT);
 

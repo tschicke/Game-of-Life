@@ -8,28 +8,14 @@
 #include "Board.h"
 #include <gl/gl.h>
 #include <iostream>
+#include <stdlib.h>
+#include <time.h>
 
 Board::Board() {
 	currentCells = new Cell[128 * 72];
 	nextCells = new Cell[128 * 72];
 
-	currentCells[getCellIndex(70, 20+10)].setLiving(true);
-	currentCells[getCellIndex(72, 20+10)].setLiving(true);
-	currentCells[getCellIndex(72, 21+10)].setLiving(true);
-	currentCells[getCellIndex(74, 22+10)].setLiving(true);
-	currentCells[getCellIndex(74, 23+10)].setLiving(true);
-	currentCells[getCellIndex(74, 24+10)].setLiving(true);
-	currentCells[getCellIndex(76, 23+10)].setLiving(true);
-	currentCells[getCellIndex(76, 24+10)].setLiving(true);
-	currentCells[getCellIndex(76, 25+10)].setLiving(true);
-	currentCells[getCellIndex(77, 24+10)].setLiving(true);
-//	for(int x = 0; x < 128; ++x){
-//		for(int y = 0; y < 72; ++y){
-//			if(rand() > RAND_MAX / 2){
-//				currentCells[getCellIndex(x, y)].setLiving(true);
-//			}
-//		}
-//	}
+	srand(time(0));
 }
 
 Board::~Board() {
@@ -50,35 +36,35 @@ void Board::update() {
 			if (y > 0 && currentCells[getCellIndex(x, y - 1)].isAlive()) {
 				liveNeighbors += 1;
 			}
-			if (y < 72 && currentCells[getCellIndex(x, y + 1)].isAlive()) {
+			if (y < 71 && currentCells[getCellIndex(x, y + 1)].isAlive()) {
 				liveNeighbors += 1;
 			}
 
 			if (x > 0 && y > 0 && currentCells[getCellIndex(x - 1, y - 1)].isAlive()) {
 				liveNeighbors += 1;
 			}
-			if (x > 0 && y < 72 && currentCells[getCellIndex(x - 1, y + 1)].isAlive()) {
+			if (x > 0 && y < 71 && currentCells[getCellIndex(x - 1, y + 1)].isAlive()) {
 				liveNeighbors += 1;
 			}
 			if (x < 128 && y > 0 && currentCells[getCellIndex(x + 1, y - 1)].isAlive()) {
 				liveNeighbors += 1;
 			}
-			if (x < 128 && y < 72 && currentCells[getCellIndex(x + 1, y + 1)].isAlive()) {
+			if (x < 128 && y < 71 && currentCells[getCellIndex(x + 1, y + 1)].isAlive()) {
 				liveNeighbors += 1;
 			}
 
-			if(currentCells[cellIndex].isAlive()){
-				if(liveNeighbors < 2){
+			if (currentCells[cellIndex].isAlive()) {
+				if (liveNeighbors <= 2) {
 					nextCells[cellIndex].setLiving(false);
-				} else if(liveNeighbors == 2 || liveNeighbors == 3){
+				} else if (liveNeighbors == 3) {
 					nextCells[cellIndex].setLiving(true);
-				} else if(liveNeighbors > 3){
+				} else if (liveNeighbors > 3) {
 					nextCells[cellIndex].setLiving(false);
 				} else {
 					nextCells[cellIndex].setLiving(false);
 				}
 			} else {
-				if(liveNeighbors == 3){
+				if (liveNeighbors == 3) {
 					nextCells[cellIndex].setLiving(true);
 				} else {
 					nextCells[cellIndex].setLiving(false);
@@ -87,7 +73,7 @@ void Board::update() {
 		}
 	}
 
-	for(int i = 0; i < 128 * 72; ++i){
+	for (int i = 0; i < 128 * 72; ++i) {
 		currentCells[i].setLiving(nextCells[i].isAlive());
 	}
 }
@@ -119,8 +105,25 @@ void Board::draw() {
 void Board::toggleCell(int x, int y) {
 	int cellX = x / 10;
 	int cellY = y / 10;
-	std::cout << cellX << ' ' << cellY << '\n';
 	currentCells[getCellIndex(cellX, cellY)].toggleLife();
+}
+
+void Board::clear() {
+	for (int x = 0; x < 128; ++x) {
+		for (int y = 0; y < 72; ++y) {
+			currentCells[getCellIndex(x, y)].setLiving(false);
+		}
+	}
+}
+
+void Board::randomize() {
+	for (int x = 0; x < 128; ++x) {
+		for (int y = 0; y < 72; ++y) {
+			if (rand() > RAND_MAX / 2) {
+				currentCells[getCellIndex(x, y)].setLiving(true);
+			}
+		}
+	}
 }
 
 int Board::getCellIndex(int x, int y) {

@@ -19,6 +19,9 @@ public:
 	void draw();
 	void toggleCell(int x, int y);
 
+	void clear();
+	void randomize();
+
 private:
 	Cell * currentCells;
 	Cell * nextCells;
